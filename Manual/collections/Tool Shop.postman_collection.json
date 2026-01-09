@@ -1,0 +1,2263 @@
+{
+  "info": {
+    "_postman_id": "082693af-17cb-4f76-adf4-48332dc73273",
+    "name": "Tool Shop",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User Module",
+      "item": [
+        {
+          "name": "Register New User (Positive)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "ef3f16ca-f6f5-4f34-a407-216de1891705",
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Response time is less than 3000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                  "});",
+                  "pm.test(\"Response contains user ID\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "});",
+                  "if (pm.response.code === 201) {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.environment.set(\"userId\", jsonData.id);",
+                  "    console.log(\"User created successfully - ID: \" + jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "c5748798-9522-45e5-8fa3-700de0216da3",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"first_name\": \"{{firstname}}\",\r\n    \"last_name\": \"{{lastname}}\",\r\n    \"address\": \"{{address}}\",\r\n    \"city\": \"{{city}}\",\r\n    \"state\": \"{{state}}\",\r\n    \"country\": \" {{country}}\",\r\n    \"postcode\": \"{{postcode}}\",\r\n    \"phone\": \"{{phone}}\",\r\n    \"dob\": \"{{dob}}\",\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/users/register",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login User (Positive)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "3c323b45-0a77-4d28-8dfa-be8142a0ed0a",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response contains token\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property(\"access_token\");\r",
+                  "});\r",
+                  "pm.test(\"Token type is Bearer\",function () {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('token_type');\r",
+                  "    pm.expect(data.token_type).to.eql('bearer');\r",
+                  "});\r",
+                  "var jsonData = pm.response.json();\r",
+                  "pm.environment.set(\"token\", jsonData.access_token);\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "59d18006-fe6c-4d63-b14f-e19422fa4ae8",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/users/login",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Current User Profile (Positive)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "99708829-e1fb-40e0-bddc-67ed78a47b16",
+                "exec": [
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "pm.test(\"Status is 200\", function (){\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "pm.test(\"Has user data\", function (){\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('id');\r",
+                  "    pm.expect(data).to.have.property('email');\r",
+                  "    pm.expect(data).to.have.property('first_name');\r",
+                  "});\r",
+                  "pm.test(\"Email matches logged in user\",function (){\r",
+                  "    const data = pm.response.json();\r",
+                  "    const userEmail = pm.environment.get(\"email\");\r",
+                  "    pm.expect(data.email).to.equal(userEmail);\r",
+                  "})\r",
+                  "pm.test(\"Response is JSON\", function () {\r",
+                  "    pm.response.to.have.header(\"Content-Type\");\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "43d9193c-e8af-451e-ad4f-a23df03753ac",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{Base_url}}/users/me",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Current User (Positive)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "a77dfb62-0730-4547-a160-5c3b53ba52cb",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Data updated\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.success).to.eql(true);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "0a5feb54-c8c2-4088-9742-7c923c6c4d1b",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"first_name\": \"{{firstname}}\",\r\n    \"last_name\": \"{{lastname}}\",\r\n    \"address\": \"{{updatedadd}}\",\r\n    \"city\": \"{{city}}\",\r\n    \"state\": \"{{state}}\",\r\n    \"country\":\" {{country}}\",\r\n    \"postcode\": \"{{postcode}}\",\r\n    \"phone\": \"{{phone}}\",\r\n    \"dob\": \"{{dob}}\",\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/users/{{userId}}",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout User(Positive)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "d2ff3203-a14e-47b6-8f22-fc60cabee7cd",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Successfully logged out\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Successfully logged out\");\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "768042d3-2632-49d0-9584-65071be7396c",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{Base_url}}/users/logout",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register with Invalid Email (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "ef3f16ca-f6f5-4f34-a407-216de1891705",
+                "exec": [
+                  "pm.test(\"Status is 400 ,403 or 422\", function(){\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 403,422]);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is JSON\", function() {\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message present\", function() {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('email');\r",
+                  "});\r",
+                  "\r",
+                  "if (pm.response.code === 400 || pm.response.code === 403) {\r",
+                  "    console.log(\"Correctly rejected invalid email\");\r",
+                  "} else if (pm.response.code === 200 || pm.response.code === 201) {\r",
+                  "    console.log(\"BUG: API accepted invalid email!\");\r",
+                  "}\r",
+                  "if (pm.response.code === 201) {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.environment.set(\"invaliduserId\", jsonData.id);\r",
+                  "    console.log(\"User created successfully - ID: \" + jsonData.id);\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "43c3dad4-b9dd-450a-babf-e0af47aa3a92",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"first_name\": \"{{firstname}}\",\r\n    \"last_name\": \"{{lastname}}\",\r\n    \"address\": \"{{address}}\",\r\n    \"city\": \"{{city}}\",\r\n    \"state\": \"{{state}}\",\r\n    \"country\":\" {{country}}\",\r\n    \"postcode\": \"{{postcode}}\",\r\n    \"phone\": \"{{phone}}\",\r\n    \"dob\": \"{{dob}}\",\r\n    \"email\": \"{{invalidemail}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/users/register",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register with Duplicate Email (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "ef3f16ca-f6f5-4f34-a407-216de1891705",
+                "exec": [
+                  "pm.test(\"Status is 422\", function(){\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 403, 422]);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is JSON\", function(){\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error about duplicate email\", function() {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('email');\r",
+                  "});\r",
+                  "\r",
+                  "if (pm.response.code === 403 || pm.response.code === 400 || pm.response.code === 422) {\r",
+                  "    console.log(\"Correctly rejected duplicate email\");\r",
+                  "} else {\r",
+                  "    console.log(\"BUG: Accepted duplicate email!\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "bfe76d48-5a72-4908-871b-4effd933a5e1",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"first_name\": \"testio\",\r\n    \"last_name\": \"{{lastname}}\",\r\n    \"address\": \"{{address}}\",\r\n    \"city\": \"{{city}}\",\r\n    \"state\": \"{{state}}\",\r\n    \"country\":\" {{country}}\",\r\n    \"postcode\": \"{{postcode}}\",\r\n    \"phone\": \"{{phone}}\",\r\n    \"dob\": \"{{dob}}\",\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/users/register",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login with Wrong Password (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "3c323b45-0a77-4d28-8dfa-be8142a0ed0a",
+                "exec": [
+                  "pm.test(\"Status is 401 Unauthorized\", function() {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is JSON\", function() {\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message present\", function() {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('error');\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"No token returned\", function() {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.not.have.property('access_token');\r",
+                  "});\r",
+                  "\r",
+                  "console.log(\"Correctly rejected wrong password\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "fc6893c2-5409-44fc-b521-dda72fec8980",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n \"email\": \"{{email}}\",\r\n  \"password\": \"wrongpassword\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/users/login",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login with Non-existent Email (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "3c323b45-0a77-4d28-8dfa-be8142a0ed0a",
+                "exec": [
+                  "pm.test(\"Status is 401 \", function() {\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([401, 404]);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is JSON\", function() {\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message present\",function(){\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('error');\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"No token returned\", function() {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.not.have.property('access_token');\r",
+                  "});\r",
+                  "\r",
+                  "console.log(\"Correctly rejected non-existent user\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "f3745158-11a6-41cb-85bb-da11f315c704",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n \"email\": \"nonextent@gmail.com\",\r\n  \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/users/login",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "e8c05b78-bf8c-419c-848f-c237bebcc2a0"
+    },
+    {
+      "name": "Admin module",
+      "item": [
+        {
+          "name": "Login Admin (Positive)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "3c323b45-0a77-4d28-8dfa-be8142a0ed0a",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response contains token\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property(\"access_token\");\r",
+                  "});\r",
+                  "pm.test(\"Token type is Bearer\",function () {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('token_type');\r",
+                  "    pm.expect(data.token_type).to.eql('bearer');\r",
+                  "});\r",
+                  "var jsonData = pm.response.json();\r",
+                  "pm.environment.set(\"admintoken\", jsonData.access_token);\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "3968b91f-c877-40e0-b1a9-8ff1e74314ff",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{adminemail}}\",\r\n  \"password\": \"{{adminpassword}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/users/login",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Specific User by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "69eecf87-c6e6-45c4-9098-a8171f3a28ed",
+                "exec": [
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.test(\"Status code is 200-Data retrieved successfully\", function () {\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "    })\r",
+                  "});\r",
+                  "pm.test(\"Response contains user id\", function () {\r",
+                  "        var jsonData = pm.response.json();\r",
+                  "        pm.expect(jsonData).to.have.property(\"id\");\r",
+                  "        pm.expect(jsonData).to.have.property(\"email\");\r",
+                  "        pm.expect(jsonData).to.have.property(\"first_name\");\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is JSON\", function () {\r",
+                  "    pm.response.to.have.header(\"Content-Type\");\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+                  "});\r",
+                  "pm.test(\"ID in request matches ID in response\", function () {\r",
+                  "    let requestId = pm.request.url.path.pop();\r",
+                  "    let responseId = pm.response.json().id;\r",
+                  "    pm.expect(Number(responseId)).to.eql(Number(requestId));\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "7b018e49-8fb3-4465-9d65-4c708cbe7cab",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admintoken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{Base_url}}/users/{{userId}}",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Specific User by ID With User Token (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "69eecf87-c6e6-45c4-9098-a8171f3a28ed",
+                "exec": [
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status code is 401 - Unauthorized access\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "if (pm.response.code === 200) {\r",
+                  "    console.log(\"BUG:Normal user can access other users' data — access control missing!\");\r",
+                  "}\r",
+                  "\r",
+                  "pm.test(\"Response is JSON\", function () {\r",
+                  "    pm.response.to.have.header(\"Content-Type\");\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "7b386b43-b8e5-4553-a222-97cbedc2bde7",
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "f217f78a-4cce-4b54-bd8d-2f5f10312efe",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "bearer{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{Base_url}}/users/{{userId}}",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Specific User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "97ca9a82-3d63-4cb2-88f7-afccbf9be64e",
+                "exec": [
+                  "pm.test(\"Status code is 204\", function () {\r",
+                  "    pm.response.to.have.status(204);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "pm.test(\"Admin authorization present\", function () {\r",
+                  "    const authHeader = pm.request.headers.get(\"Authorization\");\r",
+                  "    pm.expect(authHeader).to.exist;\r",
+                  "})\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "be4f47c6-0e4c-4b4f-9e89-5d650132aa95",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admintoken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{Base_url}}/users/{{invaliduserId}}",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{invaliduserId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE User Without Admin Token (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "97ca9a82-3d63-4cb2-88f7-afccbf9be64e",
+                "exec": [
+                  "pm.test(\"Status is 401 Unauthorized\", function(){\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is JSON\", function() {\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error about missing authorization\", function(){\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('message');\r",
+                  "});\r",
+                  "\r",
+                  "console.log(\"Correctly rejected delete without admin token\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "8588405e-f99c-491f-aea1-1bdb6bacaa58",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{Base_url}}/users/{{userId}}",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout Admin (Positive)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "d2ff3203-a14e-47b6-8f22-fc60cabee7cd",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Successfully logged out\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Successfully logged out\");\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "7845f565-1ddd-41b6-9b52-70ca9420a3db",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admintoken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{Base_url}}/users/logout",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "897fcf71-c701-4235-af03-6a58de252dbe"
+    },
+    {
+      "name": "Product Module",
+      "item": [
+        {
+          "name": "GET All Products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "a3081810-cbab-4e46-9770-6fdc1b3191ea",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Products have required fields\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property('data');\r",
+                  "    pm.expect(jsonData.data).to.be.an('array');\r",
+                  "    pm.expect(jsonData.data).to.have.length.of.at.least(1);\r",
+                  "    var product = jsonData.data[0];\r",
+                  "    pm.expect(product).to.have.property('id');\r",
+                  "    pm.expect(product).to.have.property('name');\r",
+                  "    pm.expect(product).to.have.property('price');\r",
+                  "    pm.expect(product).to.have.property('description');\r",
+                  "    pm.expect(product).to.have.property('category_id');\r",
+                  "    pm.expect(product).to.have.property('brand_id');\r",
+                  "    pm.expect(product).to.have.property('stock');\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "aa2b4c8c-4651-4775-b3fa-4094a3a73b4d",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "",
+                "value": "",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{Base_url}}/products?sort=id",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "id"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "079fbad5-e148-4162-ad38-3eaddbd89acc",
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "pm.test(\"Product ID is returned\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property('id')\r",
+                  "});\r",
+                  "pm.test(\"Product data matches request\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    var requestBody = JSON.parse(pm.request.body.raw);\r",
+                  "    pm.expect(jsonData.name).to.eql(requestBody.name);\r",
+                  "    pm.expect(jsonData.description).to.eql(requestBody.description);\r",
+                  "    pm.expect(parseFloat(jsonData.price)).to.eql(parseFloat(requestBody.price));\r",
+                  "    pm.expect(jsonData.category_id).to.eql(requestBody.category_id);\r",
+                  "    pm.expect(jsonData.brand_id).to.eql(requestBody.brand_id);\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "8765f9cb-78c5-4717-b4ca-6fb066403318",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"name\": \"Electric Drill 600W\",\r\n\"description\": \"Compact electric drill with adjustable speed, ideal for wood and metal surfaces.\",\r\n\"price\": 500,\r\n\"category_id\": 2,\r\n\"brand_id\": 5,\r\n\"product_image_id\": 5,\r\n\"is_location_offer\": 0,\r\n\"is_rental\": 1,\r\n\"co2_rating\": \"B\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/products",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product with Negative Price",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "079fbad5-e148-4162-ad38-3eaddbd89acc",
+                "exec": [
+                  "const statusCode = pm.response.code;\r",
+                  "\r",
+                  "if (statusCode === 201 ) {\r",
+                  "    const data = pm.response.json();\r",
+                  "    console.log(\"BUG DETECTED!\");\r",
+                  "    console.log(\"API accepted negative price: $\" + data.price);\r",
+                  "    \r",
+                  "} else if (statusCode === 400 || statusCode === 422) {\r",
+                  "    console.log(\"Correctly rejected negative price\");\r",
+                  "}\r",
+                  "pm.test(\"Response contains product ID\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property('id');\r",
+                  "});\r",
+                  "if (pm.response.code === 201) {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.environment.set(\"invalidproductId\", jsonData.id);\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "8249de32-9410-4710-81d7-2a55dda8ecbb",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"name\": \"Electric Drill\",\r\n\"description\": \"Compact electric drill with adjustable speed, ideal for wood and metal surfaces.\",\r\n\"price\": -100,\r\n\"category_id\": 2,\r\n\"brand_id\": 5,\r\n\"product_image_id\": 5,\r\n\"is_location_offer\": 0,\r\n\"is_rental\": 1,\r\n\"co2_rating\": \"B\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/products",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product with Missing Fields (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "079fbad5-e148-4162-ad38-3eaddbd89acc",
+                "exec": [
+                  "pm.test(\"Status is 422\", function(){\r",
+                  "    pm.expect(pm.response.code).to.equals(422);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is JSON\",  function() {\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "console.log(\"Correctly rejected incomplete product\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "13a4c19f-1f8a-43c6-9f30-78bfeab2a28d",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"name\": \"Electric Drill\",\r\n\"description\": \"Compact electric drill with adjustable speed, ideal for wood and metal surfaces.\",\r\n\"price\": -100,\r\n\"category_id\": 2,\r\n\"brand_id\": 5,\r\n\"product_image_id\": 5,\r\n\"is_rental\": 1,\r\n\"co2_rating\": \"B\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/products",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Product by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "09177c1e-41b2-475a-8a85-22d0dc51d44d",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "pm.test(\"ID in request matches ID in response\", function () {\r",
+                  "    let requestId = pm.request.url.path.pop();\r",
+                  "    let responseId = pm.response.json().id;\r",
+                  "    pm.expect(Number(responseId)).to.eql(Number(requestId));\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Product has all required fields\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property('id');\r",
+                  "    pm.expect(jsonData).to.have.property('name');\r",
+                  "    pm.expect(jsonData).to.have.property('description');\r",
+                  "    pm.expect(jsonData).to.have.property('price');\r",
+                  "    pm.expect(jsonData).to.have.property('stock');\r",
+                  "    pm.expect(jsonData).to.have.property('category_id');\r",
+                  "    pm.expect(jsonData).to.have.property('brand_id');\r",
+                  "    \r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "d3edc3b8-7999-4bd3-bb5b-77a36dbbd4ff",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{Base_url}}/products/5",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "products",
+                "5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Product with Invalid ID (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "09177c1e-41b2-475a-8a85-22d0dc51d44d",
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "pm.test(\"Response is JSON\", () => {\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message present\", () => {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('message');\r",
+                  "});\r",
+                  "console.log(\"Correctly returned 422 for invalid ID\")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "08b3a336-b9af-482a-bb43-cea54f3ba247",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{Base_url}}/products/999",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "products",
+                "999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "1a0b83a9-e5bd-4963-bf5e-44f237dd80f6",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "pm.test(\"Product updated successfully\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.success).to.eql(true);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "05cbc926-e698-45c7-b6e8-0119241b9791",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"name\": \"Electric Drill 300W\",\r\n\"description\": \"Compact electric drill with adjustable speed, ideal for wood and metal surfaces.\",\r\n\"price\": 500,\r\n\"category_id\": 2,\r\n\"brand_id\": 3,\r\n\"product_image_id\": 2,\r\n\"is_location_offer\": 0,\r\n\"is_rental\": 1,\r\n\"co2_rating\": \"B\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/products/29",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "products",
+                "29"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Related Products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "c2f971fe-8805-4746-b8be-22985dbb5f9e",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "pm.test(\"No duplicate products in results\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const ids = jsonData.map(p => p.id);\r",
+                  "    const uniqueIds = [...new Set(ids)];\r",
+                  "    if (ids.length !== uniqueIds.length) {\r",
+                  "        console.log(\"BUG: Duplicate products found!\");\r",
+                  "        const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);\r",
+                  "        console.log(\"Duplicate IDs: \" + duplicates.join(\", \"));\r",
+                  "    }\r",
+                  "    pm.expect(ids.length).to.equal(uniqueIds.length);\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "db4117c3-c88c-480d-be0e-e0c72fc02eb4",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{Base_url}}/products/25/related",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "products",
+                "25",
+                "related"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "78ff5199-f31c-41bf-a86a-949b1e293c8c",
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "pm.test(\"Response has proper structure\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property('data');\r",
+                  "    pm.expect(jsonData.data).to.be.an('array');\r",
+                  "});\r",
+                  "pm.test(\"Pagination metadata exists\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property('current_page');\r",
+                  "    pm.expect(jsonData).to.have.property('total');\r",
+                  "    pm.expect(jsonData).to.have.property('per_page');\r",
+                  "});\r",
+                  "pm.test(\"Search results contain query term\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const queryParam = pm.request.url.query.get(\"q\");\r",
+                  "    const query = decodeURIComponent(queryParam).toLowerCase().trim();\r",
+                  "    const results = jsonData.data || jsonData.products || [];\r",
+                  "    pm.expect(results.length).to.be.above(0, \"No products returned from search\");\r",
+                  "    console.log(\"Searching for:\", query);\r",
+                  "    console.log(\"Returned products:\", results.map(p => p.name));\r",
+                  "    const found = results.some(p => \r",
+                  "        (p.name && p.name.toLowerCase().includes(query)) ||\r",
+                  "        (p.description && p.description.toLowerCase().includes(query))\r",
+                  "    );\r",
+                  "    pm.expect(found, `No products matched the query '${query}'`).to.be.true;\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  "    "
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "af51e4a9-f9cf-4fc8-81a0-2057d24cd2c8",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{Base_url}}/products/search?q=hammer",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "products",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "hammer"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Product (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "bd999f68-3706-49c8-bc8f-2e3c012bb206",
+                "exec": [
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "pm.test(\"Status code is 204\", function () {\r",
+                  "    pm.response.to.have.status(204);\r",
+                  "});\r",
+                  "pm.test(\"Admin authorization present\", function () {\r",
+                  "    const authHeader = pm.request.headers.get(\"Authorization\");\r",
+                  "    pm.expect(authHeader).to.exist;\r",
+                  "})\r",
+                  "if (pm.response.code === 204) {\r",
+                  "    const productId = pm.request.url.path.pop();\r",
+                  "    console.log(\"Product \" + productId + \" deleted!\");\r",
+                  "  \r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "d29acb3f-13cc-490c-bf9d-1ac9c6736f48",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer{{admintoken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{Base_url}}/products/{{invalidproductId}}",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{invalidproductId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "644e4773-bdba-4e6b-8754-359b578db042"
+    },
+    {
+      "name": "Category",
+      "item": [
+        {
+          "name": "GET All Categories",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "79cd958f-99b4-42aa-9d88-f12fe73c88a6",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Categories is array\", function (){\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.be.an('array');\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Has category fields\", function () {\r",
+                  "    const data = pm.response.json();\r",
+                  "    if (data.length > 0) {\r",
+                  "        pm.expect(data[0]).to.have.property('id');\r",
+                  "        pm.expect(data[0]).to.have.property('name');\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "3dc7f1a5-343a-4f76-886b-e670e638c42d",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{Base_url}}/categories",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Category by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "efcc539c-56de-4b3a-92fb-4b1012281dbe",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "pm.test(\"ID matches\", function() {\r",
+                  "    const data = pm.response.json();\r",
+                  "    const reqId = pm.request.url.path.pop();\r",
+                  "    pm.expect(data.id.toString()).to.eql(reqId.toString());\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Has category fields\", function () {\r",
+                  "    const data = pm.response.json();\r",
+                  "    if (data.length > 0) {\r",
+                  "        pm.expect(data[0]).to.have.property('id');\r",
+                  "        pm.expect(data[0]).to.have.property('name');\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "8d2920c4-967c-47e5-b875-e33b7308f4a9",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{Base_url}}/categories/10",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "categories",
+                "10"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Category with Invalid ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "efcc539c-56de-4b3a-92fb-4b1012281dbe",
+                "exec": [
+                  "pm.test(\"Status is 404\", function(){\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is JSON\",function(){\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message present\", function() {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('message');\r",
+                  "});\r",
+                  "\r",
+                  "console.log(\"Correctly returned 404 for invalid category\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "d75bd497-d96d-4a5e-b320-072d85c6b675",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{Base_url}}/categories/55",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "categories",
+                "55"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "95c3863d-7ab8-4f24-9821-398803044c0c"
+    },
+    {
+      "name": "Brand",
+      "item": [
+        {
+          "name": "GET All Brands",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "063d0ee4-989a-45ef-8304-914b764e88a4",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Brand is array\", function (){\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.be.an('array');\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Has Brand fields\", function () {\r",
+                  "    const data = pm.response.json();\r",
+                  "    if (data.length > 0) {\r",
+                  "        pm.expect(data[0]).to.have.property('id');\r",
+                  "        pm.expect(data[0]).to.have.property('name');\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "8159cb77-6aed-4814-8df6-7ecbe55ac228",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{Base_url}}/brands",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "brands"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Brand by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "efcc539c-56de-4b3a-92fb-4b1012281dbe",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "pm.test(\"ID matches\", function() {\r",
+                  "    const data = pm.response.json();\r",
+                  "    const reqId = pm.request.url.path.pop();\r",
+                  "    pm.expect(data.id.toString()).to.eql(reqId.toString());\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Has brand fields\", function () {\r",
+                  "    const data = pm.response.json();\r",
+                  "    if (data.length > 0) {\r",
+                  "        pm.expect(data[0]).to.have.property('id');\r",
+                  "        pm.expect(data[0]).to.have.property('name');\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "683e5299-8607-4027-bbff-e716f1f22656",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{Base_url}}/brands/5",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "brands",
+                "5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Brand with Invalid ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "efcc539c-56de-4b3a-92fb-4b1012281dbe",
+                "exec": [
+                  "pm.test(\"Status is 404\", function(){\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is JSON\",function(){\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message present\", function() {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('message');\r",
+                  "});\r",
+                  "\r",
+                  "console.log(\"Correctly returned 404 for invalid brand\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "3faaa691-4eda-4c22-8c23-84d4da929742",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{Base_url}}/brands/55",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "brands",
+                "55"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "8ca854a9-72c6-428c-a054-259b37330b2e"
+    },
+    {
+      "name": "Invoice",
+      "item": [
+        {
+          "name": "Login User (Positive) Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "3c323b45-0a77-4d28-8dfa-be8142a0ed0a",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response contains token\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property(\"access_token\");\r",
+                  "});\r",
+                  "pm.test(\"Token type is Bearer\",function () {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('token_type');\r",
+                  "    pm.expect(data.token_type).to.eql('bearer');\r",
+                  "});\r",
+                  "var jsonData = pm.response.json();\r",
+                  "pm.environment.set(\"customer_token\", jsonData.access_token);\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "646685bd-488e-4e5d-bd7d-e989abdfa3fd",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n \"email\": \"customer@practicesoftwaretesting.com\",\r\n  \"password\": \"welcome01\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/users/login",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "users",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Invoice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2baf9a38-82e8-4bc3-b3aa-c32e258d5d0f",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "pm.test(\"Invoice created\", function () {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('id');\r",
+                  "    pm.expect(data).to.have.property('invoice_number');\r",
+                  "});\r",
+                  "if (pm.response.code === 201 ) {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.environment.set(\"invoiceId\", data.id);\r",
+                  "    pm.environment.set(\"invoiceNumber\", data.invoice_number);\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "02080648-c3b8-452c-b1d6-3384b355de6e",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer{{customer_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"user_id\": \"2\",\r\n  \"billing_address\": \"Street105\",\r\n  \"billing_city\": \"banha\",\r\n  \"billing_country\": \"egypt\",\r\n  \"billing_state\": \"state\",\r\n  \"billing_postcode\": \"1234BB\",\r\n  \"total\": 2,\r\n  \"payment_method\": \"{{payment}}\",\r\n  \"payment_account_name\": \"{{account_name}}\",\r\n  \"payment_account_number\": \"{{account_number}}\",\r\n  \"invoice_items\": [\r\n    {\r\n      \"product_id\": 5,\r\n      \"quantity\": 1,\r\n      \"unit_price\":9.17\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/invoices",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "invoices"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Invoice Without Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2baf9a38-82e8-4bc3-b3aa-c32e258d5d0f",
+                "exec": [
+                  "pm.test(\"Status is 401\",function() {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is JSON\", function() {\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error about missing authorization\", function() {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('message');\r",
+                  "});\r",
+                  "\r",
+                  "console.log(\"Correctly rejected request without token\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "c85da4d1-e2d9-4acc-a250-f2d685710341",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"user_id\": 4,\r\n  \"billing_address\": \"Street105\",\r\n  \"billing_city\": \"banha\",\r\n  \"billing_country\": \"egypt\",\r\n  \"billing_state\": \"state\",\r\n  \"billing_postcode\": \"1234BB\",\r\n  \"total\": 2,\r\n  \"payment_method\": \"Cash on Delivery\",\r\n  \"payment_account_name\": \"Jogn Doe\",\r\n  \"payment_account_number\": \"0987654345\",\r\n  \"invoice_items\": [\r\n    {\r\n      \"product_id\": 5,\r\n      \"quantity\": 1,\r\n      \"unit_price\":9.17\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/invoices",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "invoices"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET All Invoices By User Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "5fda6d0d-9e9c-4dbe-ba6f-14fe35d304df",
+                "exec": [
+                  "pm.test(\"Status is 200\", function() {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Has data array\", function() {\r",
+                  "    const response = pm.response.json();\r",
+                  "    pm.expect(response).to.have.property('data');\r",
+                  "    pm.expect(response.data).to.be.an('array');\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"BUG: Returns invoices from multiple users\", () => {\r",
+                  "    const response = pm.response.json();\r",
+                  "    \r",
+                  "    if (response.data && response.data.length > 1) {\r",
+                  "        const userIds = [...new Set(response.data.map(inv => inv.user_id))];\r",
+                  "        \r",
+                  "        console.log(\"BUG DETECTED!\");\r",
+                  "        console.log(\"Found invoices from \" + userIds.length + \" different users\");\r",
+                  "        console.log(\"User IDs: \" + userIds.join(\", \"));\r",
+                  "        \r",
+                  "        if (userIds.length > 1) {\r",
+                  "            console.log(\"Security Issue: User can see other users' invoices!\");\r",
+                  "        }\r",
+                  "    }\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"Invoices have user info\",function() {\r",
+                  "    const response = pm.response.json();\r",
+                  "    if (response.data && response.data.length > 0) {\r",
+                  "        const invoice = response.data[0];\r",
+                  "        const hasUserInfo = invoice.user_id || invoice.user;\r",
+                  "        console.log(\"User info present: \" + (hasUserInfo ? \"Yes\" : \"No\"));\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "22209e70-a356-4db7-a4c2-8416e137e5a1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer{{customer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{Base_url}}/invoices",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "invoices"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET All Invoices By Admin Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "5fda6d0d-9e9c-4dbe-ba6f-14fe35d304df",
+                "exec": [
+                  "pm.test(\"Status is 200\", function() {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Has data array\", function() {\r",
+                  "    const response = pm.response.json();\r",
+                  "    pm.expect(response).to.have.property('data');\r",
+                  "    pm.expect(response.data).to.be.an('array');\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Admin can see all invoices\",function() {\r",
+                  "    const response = pm.response.json();\r",
+                  "    console.log(\"Total invoices (all users): \" + response.data.length);\r",
+                  "    if (response.data.length > 0) {\r",
+                  "        pm.expect(response.data.length).to.be.at.least(1);\r",
+                  "    }\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "3caec42a-284c-47d1-8556-9de5c3ba28ed",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer{{admintoken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{Base_url}}/invoices",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "invoices"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Invoice By ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "f5d781ea-5dc9-42ab-bb8b-95f336456da7",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "pm.test(\"Your test name\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.success).to.eql(true);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "437442e6-fbbb-404d-89f4-6f049fc08b0e",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer{{customer_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"user_id\": \"2\",\r\n    \"billing_address\": \"Street 2\",\r\n    \"billing_city\": \"banha\",\r\n    \"billing_country\": \"egypt\",\r\n    \"billing_state\": \"state100\",\r\n    \"billing_postcode\": \"1234BB\",\r\n    \"total\": 2\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/invoices/{{invoiceId}}",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "invoices",
+                "{{invoiceId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Invoice by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "1631cdb2-b3d1-4e3b-a33e-54bc797dfa9f",
+                "exec": [
+                  "pm.test(\"Status is 200\", function() {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "pm.test(\"Has invoice data\",function () {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.have.property('id');\r",
+                  "    pm.expect(data).to.have.property('invoice_number');\r",
+                  "    pm.expect(data).to.have.property('total');\r",
+                  "    pm.expect(data).to.have.property('status');\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"ID matches\",function () {\r",
+                  "    const data = pm.response.json();\r",
+                  "    const reqId = pm.environment.get(\"invoiceId\");\r",
+                  "    pm.expect(data.id.toString()).to.eql(reqId.toString());\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "c047e899-83d5-4640-b250-cbe0a4884eb7",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer{{customer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{Base_url}}/invoices/{{invoiceId}}",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "invoices",
+                "{{invoiceId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "479b0678-ca73-42b1-a010-91fd4a17d83c"
+    },
+    {
+      "name": "Payment",
+      "item": [
+        {
+          "name": "Check Payment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "bfdb85d2-ca71-400f-9d1b-ff9cb3c17d69",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Payment was successful\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Payment was successful\");\r",
+                  "})\r",
+                  "pm.test(\"Response time is less than 3000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "17346a00-ec58-4db8-8cfe-a494d407c3c6",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"method\": \"{{payment}}\",\r\n  \"account_name\": \"{{account_name}}\",\r\n  \"account_number\": \"{{account_number}}\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_url}}/payment/check",
+              "host": [
+                "{{Base_url}}"
+              ],
+              "path": [
+                "payment",
+                "check"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "d26f780e-44c2-44e4-8028-636e974a8615"
+    }
+  ]
+}
