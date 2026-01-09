@@ -1,0 +1,18 @@
+{
+  "first_name": "Automation",
+  "last_name": "Test",
+  "address": "Street 1",
+  "city": "City",
+  "state": "State",
+  "country": "Country",
+  "postcode": "1234AA",
+  "phone": "0987654321",
+  "dob": "1970-01-01",
+  "email": "automation_test123@gmail.com",
+  "password": "super-secret",
+  "updatedLastName": "Testing",
+  "updatedCity": "cairo",
+  "invalidEmail": "@gmail.com",
+  "wrongPass": "test123",
+  "wrongEmail": "test123@gmail.com"
+}

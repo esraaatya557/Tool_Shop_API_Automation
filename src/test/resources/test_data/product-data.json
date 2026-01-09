@@ -1,0 +1,15 @@
+{
+  "name": "Electric Drill 600W",
+  "description": "Compact electric drill with adjustable speed, ideal for wood and metal surfaces.",
+  "price": 320,
+  "category_id": 2,
+  "brand_id": 2,
+  "product_image_id": 1,
+  "is_location_offer": 1,
+  "is_rental": 0,
+  "co2_rating": "B",
+  "updatedName": "Electric Drill 400W",
+  "updatedPrice": 320,
+  "searchProduct": "hammer",
+  "negativePrice": -200
+}

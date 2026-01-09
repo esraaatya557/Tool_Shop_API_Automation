@@ -1,0 +1,26 @@
+{
+  "registeredUser": {
+    "email": "customer@practicesoftwaretesting.com",
+    "password": "welcome01"
+  },
+  "invoice": {
+    "user_id": 2,
+    "billing_address": "Street1",
+    "billing_city": "city",
+    "billing_country": "country",
+    "billing_state": "state",
+    "billing_postcode": "12345",
+    "update_billing_postcode": "12255",
+    "total": 12.01,
+    "payment_method": "Cash on Delivery",
+    "payment_account_name": "Automation_Test",
+    "payment_account_number": "0123456789",
+    "invoice_items": [
+      {
+        "product_id": 9,
+        "quantity": 1,
+        "unit_price": 12.01
+      }
+    ]
+  }
+}
